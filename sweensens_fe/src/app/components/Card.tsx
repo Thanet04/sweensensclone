@@ -2,8 +2,10 @@
 import { useState } from "react";
 import Image from "next/image";
 import { Plus } from "lucide-react";
+import { useLanguage } from "../Lang/Lang";
 
 export default function Card({ promo }: { promo: any }) {
+  const { lang } = useLanguage();
   const [qty, setQty] = useState(1);
 
   return (
@@ -35,7 +37,7 @@ export default function Card({ promo }: { promo: any }) {
                        font-semibold text-lg transition-all duration-300 
                        group-hover:bottom-4 z-10 cursor-pointer"
           >
-            ดูรายละเอียด
+            {lang === "TH" ? "ดูรายละเอียด" : "View Detail"}
           </button>
         ) : (
           <div className="absolute left-1/2 -translate-x-1/2 bottom-[-56px]
@@ -56,7 +58,7 @@ export default function Card({ promo }: { promo: any }) {
             </select>
 
             <button className="flex-1 bg-red-700 hover:bg-red-600 text-white py-2 px-4 font-semibold text-sm rounded-r-full cursor-pointer">
-              ใส่ตะกร้า ฿{promo.price * qty}
+              {lang === "TH" ? "ใส่ตะกร้า" : "Add to Cart"}฿{promo.price * qty}
             </button>
           </div>
         )}

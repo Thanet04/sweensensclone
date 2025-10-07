@@ -7,6 +7,7 @@ import { CiLocationOn } from "react-icons/ci";
 import promo from "./image/banner2Fsw-banner.webp";
 import Cart from "./components/Cart";
 import Popup from "./components/popup";
+import { useLanguage } from "./Lang/Lang";
 
 // Mock data สำรอง
 const mock_categories = [
@@ -53,6 +54,7 @@ const mock_products = [
 export default function Home() {
   const [cartOpen, setCartOpen] = useState(false);
   const [isOpen, setIsOpen] = useState(false);
+  const { lang } = useLanguage();
   
   // States สำหรับ API data
   const [categories, setCategories] = useState(mock_categories);
@@ -97,11 +99,10 @@ export default function Home() {
           if (productsRes.ok) {
             const productsData = await productsRes.json();
             if (productsData && productsData.length > 0) {
-              // แปลง image_url ถ้าเป็น null ให้ใช้รูปภาพ default
               fetchedProducts = productsData.map((p: { image_url: any; price: string; }) => ({
                 ...p,
                 image_url: p.image_url || promo,
-                price: parseFloat(p.price) // แปลง string เป็น number
+                price: parseFloat(p.price) 
               }));
             }
           }
@@ -109,21 +110,18 @@ export default function Home() {
           console.warn('ไม่สามารถดึงข้อมูล products จาก API:', err);
         }
 
-        // รวมข้อมูล API + Mock data
         const allCategories = [...fetchedCategories, ...mock_categories];
         const allProducts = [...fetchedProducts, ...mock_products];
 
         setCategories(allCategories);
         setProducts(allProducts);
         
-        // เลือก category แรก
         if (allCategories.length > 0) {
           setSelectedCategory(allCategories[0].id);
         }
 
       } catch (err) {
         console.error('เกิดข้อผิดพลาดในการดึงข้อมูล:', err);
-        // ถ้า error ใช้ mock data เท่านั้น
         setCategories(mock_categories);
         setProducts(mock_products);
         setSelectedCategory(mock_categories[0].id);
@@ -144,13 +142,13 @@ export default function Home() {
     <div className="w-full flex flex-col items-center ">
       <Navbar onCartClick={() => setCartOpen(true)} />
       <div className="flex flex-col md:flex-row md:items-center md:justify-center gap-4 p-4 w-full max-w-6xl">
-        <h1 className="text-xl font-bold whitespace-nowrap">ไปส่งที่ :</h1>
+        <h1 className="text-xl font-bold whitespace-nowrap">{lang === "TH" ? "ไปส่งที่" : "Delivery To"} :</h1>
         <div className="relative w-full">
           <CiLocationOn className="absolute left-3 top-1/2 -translate-y-1/2 text-gray-400 text-xl" />
           <input
             type="text"
             className="w-full border border-gray-300 bg-gray-200 rounded-md px-10 py-2 text-black"
-            placeholder="เลือกที่อยู่สำหรับจัดส่ง"
+            placeholder={lang === "TH" ? "เลือกที่อยู่สำหรับจัดส่ง" : "Select a delivery address"}
             onFocus={() => setIsOpen(true)}
             readOnly
           />
@@ -164,7 +162,7 @@ export default function Home() {
 
       {/* โปรโมชัน */}
       <div className="w-full max-w-6xl px-4 mt-8">
-        <h1 className="text-2xl font-bold mb-6">โปรโมชัน</h1>
+        <h1 className="text-2xl font-bold mb-6">{lang === "TH" ? "โปรโมชั่น" : "Highlight & Promotions"}</h1>
         <div className="grid grid-cols-2 md:grid-cols-4 gap-6">
           {promotions.map((promo, idx) => (
             <Card key={idx} promo={promo} />
@@ -174,23 +172,19 @@ export default function Home() {
 
       {/* เมนูจัดส่ง */}
       <div className="w-full max-w-6xl px-4 mt-8 mb-8">
-        <h1 className="text-2xl font-bold mb-6">เมนูจัดส่ง</h1>
+        <h1 className="text-2xl font-bold mb-6">{lang === "TH" ? "เมนูจัดส่ง" : "Delivery Menu"}</h1>
 
-        {/* แสดง error message ถ้ามี */}
         {error && (
           <div className="bg-yellow-100 border-l-4 border-yellow-500 text-yellow-700 p-4 mb-4">
             <p className="font-medium">แสดงข้อมูลทั้งจาก API และข้อมูลสำรอง</p>
           </div>
         )}
-
-        {/* Loading state */}
         {loading ? (
           <div className="flex justify-center items-center py-12">
             <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-red-600"></div>
           </div>
         ) : (
           <>
-            {/* Categories tabs */}
             <div className="flex gap-3 mb-6 flex-wrap">
               {categories.map((cat) => (
                 <button
@@ -207,7 +201,6 @@ export default function Home() {
               ))}
             </div>
 
-            {/* Products grid */}
             <div className="grid grid-cols-2 md:grid-cols-4 gap-6">
               {filteredProducts.length > 0 ? (
                 filteredProducts.map((product) => (
@@ -223,7 +216,7 @@ export default function Home() {
                 ))
               ) : (
                 <div className="col-span-full text-center py-12 text-gray-500">
-                  ไม่มีสินค้าในหมวดหมู่นี้
+                  {lang === "TH" ? "ไม่มีสินค้าในหมวดหมู่นี้" : "Not Products in this Categories"}
                 </div>
               )}
             </div>

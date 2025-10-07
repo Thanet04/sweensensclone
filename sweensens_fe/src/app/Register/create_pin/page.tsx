@@ -6,9 +6,12 @@ import Image from "next/image";
 import banner from "../../image/register-banner.webp";
 import { useRouter } from "next/navigation";
 import { ChevronLeft, Eye, EyeOff } from "lucide-react";
+import Navbar from "@/app/components/Navbar";
+import { useLanguage } from "@/app/Lang/Lang";
 
 export default function CreatePin() {
   const router = useRouter();
+  const { lang } = useLanguage();
   const [phone, setPhone] = useState<string>("");
   const [pin, setPin] = useState<string[]>(["", "", "", "", "", ""]);
   const [confirmPin, setConfirmPin] = useState<string[]>(["", "", "", "", "", ""]);
@@ -114,6 +117,8 @@ export default function CreatePin() {
   };
 
   return (
+    <>
+    <Navbar onCartClick={() => {}} />
     <div className="w-full h-screen grid grid-cols-1 md:grid-cols-2 bg-gray-100">
       
       <div className="flex items-center justify-center p-4">
@@ -122,19 +127,19 @@ export default function CreatePin() {
           <div className="flex items-center my-4 p-1 hover:bg-gray-100 rounded-lg w-20 cursor-pointer">
             <ChevronLeft className="w-5 h-5 font-bold"/>
             <button className="text-lg font-bold cursor-pointer" onClick={() => router.push("/Register")}>
-              กลับ
+            {lang === "TH" ? "กลับ" : "Back"}
             </button>
           </div>
 
           <h1 className="text-3xl font-semibold text-gray-800 mb-4">
-            ตั้งรหัส PIN 6 หลัก
+            {lang === "TH" ? "ตั้งรหัส PIN 6 หลัก" : "Set PIN 6 digits"}
           </h1>
           <p className="text-md my-2">รหัส PIN 6 หลักนี้จะช่วยให้คุณทำกิจกรรมได้ปลอดภัยยิ่งขึ้น</p>
 
           <form className="space-y-6" onSubmit={handleSubmit}>
             {/* PIN Inputs */}
             <div>
-              <label className="block text-md font-medium text-gray-600 mb-2">สร้างรหัส PIN</label>
+              <label className="block text-md font-medium text-gray-600 mb-2">{lang === "TH" ? "สร้างรหัส PIN" : "Set PIN"}</label>
               <div className="flex justify-between">
                 {pin.map((p, idx) => (
                   <input
@@ -152,7 +157,7 @@ export default function CreatePin() {
             </div>
 
             <div>
-              <label className="block text-md font-medium text-gray-600 mb-2">ยืนยันรหัส PIN</label>
+              <label className="block text-md font-medium text-gray-600 mb-2">{lang === "TH" ? "ยืนยันรหัส PIN" : "Confirm PIN"}</label>
               <div className="flex justify-between">
                 {confirmPin.map((p, idx) => (
                   <input
@@ -173,7 +178,7 @@ export default function CreatePin() {
               <button type="button" onClick={() => setShowPin(!showPin)} className="flex items-center gap-1 text-gray-700 cursor-pointer">
                 {showPin ? <EyeOff /> : <Eye />}
               </button>
-              <span className="text-gray-600 font-medium">แสดงรหัส PIN</span>
+              <span className="text-gray-600 font-medium">{lang === "TH" ? "แสดงรหัส PIN" : "Show PIN"}</span>
             </div>
 
             <button
@@ -183,7 +188,7 @@ export default function CreatePin() {
                 isPinComplete ? "bg-red-700 hover:bg-red-600 cursor-pointer" : "bg-gray-300"
               }`}
             >
-              ดำเนินการต่อ
+              {lang === "TH" ? "ดำเนินการต่อ" : "Proceed"}
             </button>
           </form>
         </div>
@@ -198,5 +203,6 @@ export default function CreatePin() {
         />
       </div>
     </div>
+    </>
   );
 }

@@ -9,6 +9,7 @@ import Logo from "../image/logo.svg";
 import ModileCart from '../image/mobile-cart.svg';
 import Order from '../image/order-rerodering.svg';
 import M_Point from "../image/member-point.svg";
+import { useLanguage } from "../Lang/Lang";
 
 interface User {
   id: number;
@@ -22,11 +23,11 @@ interface User {
 export default function Navbar({ onCartClick }: { onCartClick: () => void }) {
     const router = useRouter();
     const [open, setOpen] = useState(false);
-    const [lang, setLang] = useState<"TH" | "EN">("TH");
     const [langOpen, setLangOpen] = useState(false);
     const [langOpenMobile, setLangOpenMobile] = useState(false);
     const [user, setUser] = useState<User | null>(null);
     const [userDropdownOpen, setUserDropdownOpen] = useState(false);
+    const { lang, changeLang } = useLanguage(); 
 
     useEffect(() => {
       // ดึงข้อมูลผู้ใช้จาก localStorage
@@ -35,12 +36,6 @@ export default function Navbar({ onCartClick }: { onCartClick: () => void }) {
         setUser(JSON.parse(userData));
       }
     }, []);
-
-    const changeLang = (value: "TH" | "EN") => {
-        setLang(value);
-        setLangOpen(false);
-        setLangOpenMobile(false);
-    };
 
     const handleLogout = () => {
       localStorage.removeItem("token");
@@ -65,7 +60,7 @@ export default function Navbar({ onCartClick }: { onCartClick: () => void }) {
         {user &&(
           <div className="hidden md:flex items-center gap-2">
             <Image src={M_Point} alt="User" className="h-6 w-auto" />
-            <span className="font-semibold text-lg text-gray-500">0 แต้ม</span>
+            <span className="font-semibold text-lg text-gray-500">0 {lang === "TH" ? "แต้ม" : "Points"}</span>
           </div>
         )}
 
@@ -80,7 +75,7 @@ export default function Navbar({ onCartClick }: { onCartClick: () => void }) {
                   onClick={() => setUserDropdownOpen(!userDropdownOpen)}
                   className="flex items-center gap-2 px-4 py-2 border border-red-700 rounded-full text-red-700 cursor-pointer hover:bg-red-700 hover:text-white"
                 >
-                  <span>สวัสดี {user.first_name}</span>
+                  <span>{lang === "TH" ? "สวัสดี" : "Hello"} {user.first_name}</span>
                 </button>
                 
                 {userDropdownOpen && (
@@ -90,14 +85,16 @@ export default function Navbar({ onCartClick }: { onCartClick: () => void }) {
                       className="flex items-center gap-2 w-full text-left px-4 py-2 hover:bg-gray-100"
                     >
                       <Image src={Order} alt="Orders" className="h-5 w-auto" />
-                      <span>คำสั่งซื้อและสั่งอีกครั้ง</span>
+                      <span>
+                        {lang === "TH" ? "คำสั่งซื้อและสั่งอีกครั้ง" : "Order & Reordering"}
+                      </span>
                     </button>
                     <button 
                       onClick={() => { setUserDropdownOpen(false); router.push('/profile'); }}
                       className="flex items-center gap-2 w-full text-left px-4 py-2 hover:bg-gray-100"
                     >
                       <FaUserCircle className="w-5 h-5" />
-                      <span>โปรไฟล์</span>
+                      <span>{lang === "TH" ? "โปรไฟล์" : "Profile"}</span>
                     </button>
                     <hr className="my-2 mx-4 border-gray-300" />
                     <button  onClick={handleLogout}
@@ -106,7 +103,7 @@ export default function Navbar({ onCartClick }: { onCartClick: () => void }) {
                         <path d="M4.75358 4.16667H9.75358C10.2119 4.16667 10.5869 3.79167 10.5869 3.33333C10.5869 2.875 10.2119 2.5 9.75358 2.5H4.75358C3.83691 2.5 3.08691 3.25 3.08691 4.16667V15.8333C3.08691 16.75 3.83691 17.5 4.75358 17.5H9.75358C10.2119 17.5 10.5869 17.125 10.5869 16.6667C10.5869 16.2083 10.2119 15.8333 9.75358 15.8333H4.75358V4.16667Z" fill="#EB334E" data-sentry-element="path" data-sentry-source-file="LogOut.tsx"></path>
                         <path d="M17.7952 9.70833L15.4702 7.38333C15.2036 7.11667 14.7536 7.3 14.7536 7.675V9.16667H8.92025C8.46191 9.16667 8.08691 9.54167 8.08691 10C8.08691 10.4583 8.46191 10.8333 8.92025 10.8333H14.7536V12.325C14.7536 12.7 15.2036 12.8833 15.4619 12.6167L17.7869 10.2917C17.9536 10.1333 17.9536 9.86667 17.7952 9.70833Z" fill="#EB334E" data-sentry-element="path" data-sentry-source-file="LogOut.tsx"></path>
                       </svg>
-                      <span>ออกจากระบบ</span>
+                      <span>{lang === "TH" ? "ออกจากระบบ" : "Logout"}</span>
                     </button>
                   </div>
                 )}
@@ -116,7 +113,7 @@ export default function Navbar({ onCartClick }: { onCartClick: () => void }) {
                 onClick={() => router.push('/login')}
                 className="hidden md:block p-2 bg-red-700 hover:bg-red-600 rounded-full text-white text-xl"
               >
-                เข้าสู่ระบบ / ลงทะเบียน
+                {lang === "TH" ? "เข้าสู่ระบบ / ลงทะเบียน" : "Login / Register"}
               </button>
             )}
 
@@ -168,7 +165,7 @@ export default function Navbar({ onCartClick }: { onCartClick: () => void }) {
           
           {user ? (
             <div className="w-full flex items-center gap-2 mt-2">
-              <p className="text-xl font-semibold">สวัสดี, {user.first_name} 🍦</p>
+              <p className="text-xl font-semibold">{lang === "TH" ? "สวัสดี" : "Hello"}, {user.first_name} 🍦</p>
 
             </div>
           ) : (
@@ -179,7 +176,7 @@ export default function Navbar({ onCartClick }: { onCartClick: () => void }) {
             <div className="md:hidden w-full gap-2 border-b border-gray-300 py-2 mb-2">
               <div className="flex items-center gap-2">
                 <Image src={M_Point} alt="User" className="h-6 w-auto" />
-                <span className="font-semibold text-lg text-gray-500">0 แต้ม</span>
+                <span className="font-semibold text-lg text-gray-500">0 {lang === "TH" ? "แต้ม" : "Points"}</span>
               </div>
             </div>
           )}
@@ -188,21 +185,21 @@ export default function Navbar({ onCartClick }: { onCartClick: () => void }) {
         <nav className="flex flex-col pb-4 px-4 space-y-4">
           <a href="#" className="flex items-center py-2 px-4 text-gray-700 hover:bg-gray-100">
             <Image src={Order} alt="Orders" className="h-8 w-auto" />
-            <p className="text-lg">คำสั่งซื้อและสั่งอีกครั้ง</p>
+            <p className="text-lg">{lang === "TH" ? "คำสั่งซื้อและสั่งอีกครั้ง" : "Order & Reordering"}</p>
           </a>
           <a href="#" className="flex items-center gap-2 px-4 text-gray-700 hover:bg-gray-100">
             <FaUserCircle className="w-6 h-6" />
-            <p className="text-lg">โปรไฟล์</p>
+            <p className="text-lg">{lang === "TH" ? "โปรไฟล์" : "Profile"}</p>
           </a>
           <div className="flex flex-col ml-8 space-y-2">
             <a href="#" className="flex items-center gap-2 py-2 px-4 text-gray-700 hover:bg-gray-100">
-              <p className="text-lg">เปลี่ยน PIN</p>
+              <p className="text-lg">{lang === "TH" ? "เปลี่ยน PIN" : "Change PIN"}</p>
             </a>
             <a href="#" className="flex items-center gap-2 py-2 px-4 text-gray-700 hover:bg-gray-100">
-              <p className="text-lg">บัตรเครดิตของฉัน</p>
+              <p className="text-lg">{lang === "TH" ? "บัตรเครดิตของฉัน" : "My Credit Cards"}</p>
             </a>
             <a href="#" className="flex items-center gap-2 py-2 px-4 text-gray-700 hover:bg-gray-100">
-              <p className="text-lg">สมุดที่อยู่</p>
+              <p className="text-lg"> {lang === "TH" ? "สมุดที่อยู่" : "Address Book"}</p>
             </a>
           </div>
 
@@ -211,7 +208,7 @@ export default function Navbar({ onCartClick }: { onCartClick: () => void }) {
               onClick={() => setLangOpenMobile(!langOpenMobile)}
               className="flex items-center justify-between w-full px-4 py-2"
             >
-              ภาษา - {lang}
+              {lang === "TH" ? "ภาษา" : "Language"} - {lang}
               <ChevronDown className={`w-4 h-4 transition-transform duration-300 ${
                 langOpenMobile ? "rotate-180" : ""
               }`} />
@@ -249,13 +246,13 @@ export default function Navbar({ onCartClick }: { onCartClick: () => void }) {
                         <path d="M4.75358 4.16667H9.75358C10.2119 4.16667 10.5869 3.79167 10.5869 3.33333C10.5869 2.875 10.2119 2.5 9.75358 2.5H4.75358C3.83691 2.5 3.08691 3.25 3.08691 4.16667V15.8333C3.08691 16.75 3.83691 17.5 4.75358 17.5H9.75358C10.2119 17.5 10.5869 17.125 10.5869 16.6667C10.5869 16.2083 10.2119 15.8333 9.75358 15.8333H4.75358V4.16667Z" fill="#EB334E" data-sentry-element="path" data-sentry-source-file="LogOut.tsx"></path>
                         <path d="M17.7952 9.70833L15.4702 7.38333C15.2036 7.11667 14.7536 7.3 14.7536 7.675V9.16667H8.92025C8.46191 9.16667 8.08691 9.54167 8.08691 10C8.08691 10.4583 8.46191 10.8333 8.92025 10.8333H14.7536V12.325C14.7536 12.7 15.2036 12.8833 15.4619 12.6167L17.7869 10.2917C17.9536 10.1333 17.9536 9.86667 17.7952 9.70833Z" fill="#EB334E" data-sentry-element="path" data-sentry-source-file="LogOut.tsx"></path>
                 </svg>
-                ออกจากระบบ
+                {lang === "TH" ? "ออกจากระบบ" : "Logout"}
               </button>
            </div>
           ) : (
             <button onClick={() => router.push('/login')}
               className="w-full py-2 bg-red-700 hover:bg-red-600 rounded-full text-white">
-              เข้าสู่ระบบ / ลงทะเบียน
+              {lang === "TH" ? "เข้าสู่ระบบ / ลงทะเบียน" : "Login / Register"}
             </button>
           )}
         </nav>

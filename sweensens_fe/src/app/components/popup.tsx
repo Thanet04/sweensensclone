@@ -4,6 +4,7 @@ import { X } from "lucide-react";
 import { CiMap } from "react-icons/ci";
 import Image from "next/image";
 import Location from '../image/empty-address-list.webp'
+import { useLanguage } from "../Lang/Lang";
 
 interface PopupProps {
   isOpen: boolean;
@@ -12,6 +13,8 @@ interface PopupProps {
 }
 
 export default function Popup({ isOpen, onClose }: PopupProps) {
+  const { lang } = useLanguage();
+
   if (!isOpen) return null;
 
   return (
@@ -29,20 +32,20 @@ export default function Popup({ isOpen, onClose }: PopupProps) {
         <X className="w-6 h-6 text-gray-700" />
     </button>
     
-    <h1 className="text-xl font-bold my-2">เลือกที่อยู่สำหรับจัดส่ง</h1>
+    <h1 className="text-xl font-bold my-2">{lang === "TH" ? "เลือกที่อยู่สำหรับจัดส่ง" : "Select delivery address"}</h1>
 
     <div className="w-full flex flex-col-reverse md:flex-row md:items-center justify-between my-2">
-        <h1 className="text-lg md:text-xl font-semibold text-gray-600">ที่อยู่ที่บันทึกไว้</h1>
+        <h1 className="text-lg md:text-xl font-semibold text-gray-600">{lang === "TH" ? "ที่อยู่ที่บันทึกไว้" : "Saved Address"}</h1>
 
         <div className="flex items-center justify-center gap-2 hover:bg-gray-100 p-2 rounded-lg cursor-pointer">
             <CiMap className="h-5 w-5 text-blue-700"/>
-            <p className="text-xl text-blue-700 font-semibolds">เลือกจากแผนที่</p>
+            <p className="text-xl text-blue-700 font-semibolds">{lang === "TH" ? "เลือกจากแผนที่" : "Choose from map"}</p>
         </div>
     </div>
     
     <div className="flex flex-col items-center my-8">
         <Image src={Location} alt="Location" />
-        <h1 className="text-xl font-semibold text-gray-600 my-2">ไม่มีที่อยู่ที่บันทึกไว้</h1>
+        <h1 className="text-xl font-semibold text-gray-600 my-2">{lang === "TH" ? "ไม่มีที่อยู่ที่บันทึกไว้" : "No saved address"}</h1>
     </div>
 
     </div>

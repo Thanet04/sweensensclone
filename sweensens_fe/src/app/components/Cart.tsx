@@ -3,6 +3,7 @@ import { X } from "lucide-react";
 import { useState } from "react";
 import { FaShoppingBag } from "react-icons/fa";
 import { MdAddShoppingCart } from "react-icons/md";
+import { useLanguage } from "../Lang/Lang";
 
 interface CartProps {
   isOpen: boolean;
@@ -10,6 +11,8 @@ interface CartProps {
 }
 
 export default function Cart({ isOpen, setIsOpen }: CartProps) {
+  const { lang } = useLanguage();
+
   return (
     <>
       <div 
@@ -17,7 +20,7 @@ export default function Cart({ isOpen, setIsOpen }: CartProps) {
         onClick={() => setIsOpen(true)}
       >
         <FaShoppingBag className="w-6 h-6 text-white" />
-        <span className="text-center font-semibold">ตะกร้า</span>
+        <span className="text-center font-semibold">{lang === "TH" ? "ตระกร้า" : "My Cart"}</span>
       </div>
 
       {isOpen && (
@@ -45,7 +48,7 @@ export default function Cart({ isOpen, setIsOpen }: CartProps) {
 
           <div className="flex flex-col justify-center items-center h-full"> 
               <MdAddShoppingCart className="w-15 h-15 text-gray-400" /> 
-              <p className="text-md text-gray-400">เริ่มเพิ่มสินค้าในรถเข็นของคุณ</p> 
+              <p className="text-md text-gray-400">{lang === "TH" ? "เริ่มเพิ่มสินค้าในรถเข็นของคุณ" : "Start adding items to your cart"}</p> 
           </div>
         </div>
       )}
